@@ -62,6 +62,90 @@ function slowFastSlowRangeMod(begin, end, total_points){
    return sfs_range;
 }
 
+function clockwiseMove( baseDeg, addedDeg){
+   if(
+      Math.sign(baseDeg)  == -1 ||
+      Math.sign(addedDeg) == -1
+   ){
+     throw new Error(`params sign is not positive`)
+   }
+
+   if(baseDeg - addedDeg < 0){
+      return 360 - Math.abs(baseDeg - addedDeg);
+   }
+   return baseDeg - addedDeg;
+}
+
+function antiClockwiseMove( baseDeg, addedDeg){
+   if(
+      Math.sign(baseDeg)  == -1 ||
+      Math.sign(addedDeg) == -1
+   ){
+     throw new Error(`params sign is not positive`)
+   }
+   if(baseDeg + addedDeg > 360){
+      return Math.abs(baseDeg + addedDeg) % 360;
+   }
+   return baseDeg + addedDeg;
+}
+
+function setAngleTo90( moveDeg, inputDegs = []){
+
+    let outputDegs = [];
+    if(
+      moveDeg > 90 &&
+      moveDeg < 270
+    ){
+       outputDegs = inputDegs.map((deg) => clockwiseMove(deg,moveDeg - 90));
+    }
+    if(
+      moveDeg <= 90 &&
+      moveDeg >= 0  
+    ){
+       outputDegs = inputDegs.map((deg) => antiClockwiseMove(deg,90 - moveDeg));
+    }
+    if(
+      moveDeg <= 360 &&
+      moveDeg >= 270 
+    ){
+       console.log(moveDeg,(360 - moveDeg) + 90)
+       outputDegs = inputDegs.map((deg) => antiClockwiseMove(deg,(360 - moveDeg) + 90));
+    }
+    return outputDegs;
+}
+
+function animate({begin, end, duration,step}){
+
+   if(
+      begin    === undefined ||
+      end      === undefined ||
+      duration === undefined ||
+      step     === undefined
+   ){
+      throw new Error('arguments may be missing');
+   }
+   var handler;
+   var interval    = 60;
+   var frame_count = duration/interval
+   var sfs_points  = slowFastSlowRangeMod(begin, end,  frame_count);  
+   var callback_count = 0;
+   var debug = true; 
+   handler = setInterval(function(callback, core){
+        if(callback_count === (frame_count - 1)){
+           clearInterval(handler);
+        }
+        if(debug === false){
+           callback( sfs_points[ callback_count]);
+        }else if(debug === true){
+           callback( sfs_points[ callback_count],core);
+        }
+        callback_count++;
+   },interval,step,{
+      begin,
+      end,
+      sfs_points
+   });
+}
 
 function filter_deg_clockwise( deg, add){
    let eval = deg + add;
@@ -70,6 +154,8 @@ function filter_deg_clockwise( deg, add){
    }
    return eval;
 }
+
+
 /*
 function rotate_menu_to(that){
    let btn_deg = parseFloat($(that).attr('deg'));
@@ -144,11 +230,67 @@ $(document).ready(function(){
     //     });
     // });
     // var circleBtns = [];
-   //  $('.btn-circle').each(function(i,obj){
-   //      $(this).css('bottom',get_y( i * deg_div, '50%'));
-   //      $(this).css('left',get_x( i * deg_div, '50%'));
-   //      $(this).attr('deg', i * deg_div);
-   //  })
+    $('.btn-circle').each(function(i,obj){
+        $(this).css('bottom',get_y( i * deg_div, '50%'));
+        $(this).css('left',get_x( i * deg_div, '50%'));
+        $(this).attr('deg', i * deg_div);
+    })
+
+   
+
+   
+
+    $('.btn-circle').click(function(){
+      
+      let clk_btn_deg = parseFloat($(this).attr('deg'));
+      var buttonAngles = [];
+      $('.btn-circle').each(function(){
+         buttonAngles.push( parseFloat($(this).attr('deg')) );
+      })
+
+      var movedButtonAndles = setAngleTo90(clk_btn_deg, buttonAngles);
+      var animateFns = [];
+      // movedButtonAndles.map((movedAngle,i)=>function(){
+      //      animate({
+      //        begin: buttonAngles[i],
+      //        end: movedAngle,
+      //        duration: 3600,
+      //        animate:
+      //      })
+      // })
+      console.log(buttonAngles,movedButtonAndles)
+      $('.btn-circle').each(function( index ){
+         let fn = function() {
+            animate({
+               begin: buttonAngles[index],
+               end: movedButtonAndles[index],
+               duration: 8000,
+               step: function(now, data){
+                  console.log(index,data)
+                  // $(this).attr('deg',now);
+               }
+            });
+          }
+         animateFns.push(fn);
+      })
+      // console.log(animateFns)
+      animateFns.map((fn)=> fn());
+
+
+      //   animate({
+      //     begin: btn_deg,
+      //     end:   90,
+      //     duration: 3600,
+      //     animate: function(now){
+      //       $('.btn-circle').each(function(){
+      //           $(this).css('bottom','calc(sin(0deg)*' + currentRedius + '% + 50%)');
+      //           $(this).css('left','calc(cos(0deg)*' + currentRedius + '% + 50%)');
+      //       })
+      //     }
+      //   })
+    })
+
+
    //  let arr = new Array(50);
    //  let div = 90/50;
    //  arr.fill(1)
@@ -161,16 +303,17 @@ $(document).ready(function(){
    //  console.log(arr)
 
 
-   // function animate({begin, end, duration,callback}){
+   
 
-   //    var handler;
-   //    let callback_count = Math.abs(end - begin);
-   //    let interval = duration/callback_count;
-   //    if(callback)
-   //    handler = setInterval(function(){
 
-   //    },interval);
-   // }
+   // animate({
+   //    begin:0,
+   //    end:50,
+   //    duration:6000,
+   //    animate:function(now){
+
+   //    }
+   // });
 
 
    //50 0
