@@ -9,18 +9,20 @@ function get_y(deg, rad){
     return "calc(sin("+ deg.toFixed(2) + "deg)*" + rad + " + 50%)";
 }
 
+/**
+ * This function always work lower to higher range 
+ *
+ */
 
 function slowFastSlowRange(begin, end, total_points){
       
+
+
+   if(begin > end){
+      throw new Error(`begin is greater than end.`);
+   }
    let range_len = Math.abs( end - begin);//calculated the range length unit taken as 1
 
-   /**
-    * If we find range length is greater than passed length,
-    * then we can`t scale the points to be fall into ranges like (0,1) or (1,0).
-    */
-   if(range_len > total_points){
-      throw Error(`range length-${range_len} is greater than passed length-${total_points}`);
-   }
    /**
     *  Here it`s unit of the generated output range.
     */
@@ -49,15 +51,17 @@ function slowFastSlowRange(begin, end, total_points){
    }
    return output_range;
 }
-
-function slowFastSlowRangeMod(begin, end, total_points){
+/** If 50 is passed, it creates range points like 0, 1, 2....
+ *  If -50 is passed, it creates range points like 0, -1, -2...
+ */
+function easeInRange(num, total_points){
 
    let sfs_range = []; //sfs stands slow fast slow
-   if(begin > end){
-   sfs_range = slowFastSlowRange(end, begin, total_points);
-   sfs_range.reverse();
+   if(Math.sign(num) == -1){
+     sfs_range = slowFastSlowRange(num, 0, total_points);
+     sfs_range.reverse();
    }else{
-   sfs_range = slowFastSlowRange(begin, end, total_points);
+     sfs_range = slowFastSlowRange(0, num, total_points);
    }
    return sfs_range;
 }
@@ -73,7 +77,7 @@ function clockwiseMove( baseDeg, addedDeg){
    if(baseDeg - addedDeg < 0){
       return 360 - Math.abs(baseDeg - addedDeg);
    }
-   return baseDeg - addedDeg;
+   return -(baseDeg - addedDeg);
 }
 
 function antiClockwiseMove( baseDeg, addedDeg){
@@ -89,62 +93,58 @@ function antiClockwiseMove( baseDeg, addedDeg){
    return baseDeg + addedDeg;
 }
 
-function setAngleTo90( moveDeg, inputDegs = []){
+function computeAnglesOffset( moveDeg, inputDegs = []){
 
     let outputDegs = [];
+    let offset;
     if(
       moveDeg > 90 &&
       moveDeg < 270
     ){
-       outputDegs = inputDegs.map((deg) => clockwiseMove(deg,moveDeg - 90));
+      //  outputDegs = inputDegs.map((deg) => clockwiseMove(deg,moveDeg - 90));
+        offset = 90 -  moveDeg;
     }
     if(
       moveDeg <= 90 &&
       moveDeg >= 0  
     ){
-       outputDegs = inputDegs.map((deg) => antiClockwiseMove(deg,90 - moveDeg));
+      //  outputDegs = inputDegs.map((deg) => antiClockwiseMove(deg,90 - moveDeg));
+        offset = 90 - moveDeg;
     }
     if(
       moveDeg <= 360 &&
       moveDeg >= 270 
     ){
-       console.log(moveDeg,(360 - moveDeg) + 90)
-       outputDegs = inputDegs.map((deg) => antiClockwiseMove(deg,(360 - moveDeg) + 90));
+      //  console.log(moveDeg,(360 - moveDeg) + 90)
+      //  outputDegs = inputDegs.map((deg) => antiClockwiseMove(deg,(360 - moveDeg) + 90));
+        offset = (360 - moveDeg) + 90;
     }
-    return outputDegs;
+    return offset;
+   //  return outputDegs;
 }
 
-function animate({begin, end, duration,step}){
+function animate({offset, duration,step}){
 
    if(
-      begin    === undefined ||
-      end      === undefined ||
+      offset   === undefined ||
       duration === undefined ||
       step     === undefined
    ){
       throw new Error('arguments may be missing');
    }
    var handler;
-   var interval    = 60;
-   var frame_count = duration/interval
-   var sfs_points  = slowFastSlowRangeMod(begin, end,  frame_count);  
+   var interval    = 120;
+   var frame_count = Math.ceil(duration/interval);
    var callback_count = 0;
-   var debug = true; 
-   handler = setInterval(function(callback, core){
+   var sfs_points  =  easeInRange( offset, frame_count);  
+
+   handler = setInterval(function(callback){
         if(callback_count === (frame_count - 1)){
            clearInterval(handler);
         }
-        if(debug === false){
-           callback( sfs_points[ callback_count]);
-        }else if(debug === true){
-           callback( sfs_points[ callback_count],core);
-        }
+        callback( sfs_points[ callback_count]);
         callback_count++;
-   },interval,step,{
-      begin,
-      end,
-      sfs_points
-   });
+   },interval,step);
 }
 
 function filter_deg_clockwise( deg, add){
@@ -245,10 +245,10 @@ $(document).ready(function(){
       let clk_btn_deg = parseFloat($(this).attr('deg'));
       var buttonAngles = [];
       $('.btn-circle').each(function(){
-         buttonAngles.push( parseFloat($(this).attr('deg')) );
+         buttonAngles.push( parseFloat($(this).attr('deg')));
       })
 
-      var movedButtonAndles = setAngleTo90(clk_btn_deg, buttonAngles);
+      // var movedButtonAndles = setAngleTo90(clk_btn_deg, buttonAngles);
       var animateFns = [];
       // movedButtonAndles.map((movedAngle,i)=>function(){
       //      animate({
@@ -258,22 +258,35 @@ $(document).ready(function(){
       //        animate:
       //      })
       // })
-      console.log(buttonAngles,movedButtonAndles)
+      // console.log(buttonAngles,movedButtonAndles)
+      let angleOffset = computeAnglesOffset(clk_btn_deg);
+
       $('.btn-circle').each(function( index ){
-         let fn = function() {
-            animate({
-               begin: buttonAngles[index],
-               end: movedButtonAndles[index],
-               duration: 8000,
-               step: function(now, data){
-                  console.log(index,data)
-                  // $(this).attr('deg',now);
-               }
-            });
-          }
-         animateFns.push(fn);
+            var that    = this;
+            var baseDeg = parseFloat($(this).attr('deg'));
+            let fn = function() {
+                  animate({
+                     offset: angleOffset,
+                     duration: 1000,
+                     step: function(addedDeg){
+                        if(Math.sign(addedDeg) == -1){
+                            let moveDeg = baseDeg + addedDeg < 0? 360 +baseDeg + addedDeg: baseDeg + addedDeg;
+                            $(that).attr('deg',moveDeg);
+                            $(that).css('left',get_x(moveDeg,'50%'));
+                            $(that).css('bottom',get_y(moveDeg,'50%'));
+                        }
+                        if(Math.sign(addedDeg) == 1){
+                           let moveDeg = baseDeg + addedDeg > 360? (baseDeg + addedDeg)%360 : baseDeg + addedDeg;
+                           $(that).attr('deg',moveDeg);
+                           $(that).css('left',get_x(moveDeg,'50%'));
+                           $(that).css('bottom',get_y(moveDeg,'50%'));
+                        }
+                     }
+                  });
+            }
+            animateFns.push(fn);
       })
-      // console.log(animateFns)
+      //console.log(animateFns)
       animateFns.map((fn)=> fn());
 
 
@@ -321,7 +334,7 @@ $(document).ready(function(){
 
 
 
-    console.log(slowFastSlowRangeMod(50,0,50));
+   //  console.log(easeInRange(-50,10));
     
 
     // $('.btn-circle').click(function(){
