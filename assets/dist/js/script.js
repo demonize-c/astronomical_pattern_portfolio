@@ -1,5 +1,5 @@
 
-var deg_div = 360 / 5;
+var deg_div = 360 / 6;
 
 function get_x(deg, rad){
     return "calc(cos("+ deg.toFixed(2) + "deg)*" + rad + " + 50%)";
@@ -66,33 +66,6 @@ function easeInRange(num, total_points){
    return sfs_range;
 }
 
-function clockwiseMove( baseDeg, addedDeg){
-   if(
-      Math.sign(baseDeg)  == -1 ||
-      Math.sign(addedDeg) == -1
-   ){
-     throw new Error(`params sign is not positive`)
-   }
-
-   if(baseDeg - addedDeg < 0){
-      return 360 - Math.abs(baseDeg - addedDeg);
-   }
-   return -(baseDeg - addedDeg);
-}
-
-function antiClockwiseMove( baseDeg, addedDeg){
-   if(
-      Math.sign(baseDeg)  == -1 ||
-      Math.sign(addedDeg) == -1
-   ){
-     throw new Error(`params sign is not positive`)
-   }
-   if(baseDeg + addedDeg > 360){
-      return Math.abs(baseDeg + addedDeg) % 360;
-   }
-   return baseDeg + addedDeg;
-}
-
 function computeAnglesOffset( moveDeg, inputDegs = []){
 
     let outputDegs = [];
@@ -123,7 +96,7 @@ function computeAnglesOffset( moveDeg, inputDegs = []){
    //  return outputDegs;
 }
 
-function animate({offset, duration,step}){
+function animate({offset, duration,step,done}){
 
    if(
       offset   === undefined ||
@@ -138,107 +111,34 @@ function animate({offset, duration,step}){
    var callback_count = 0;
    var sfs_points  =  easeInRange( offset, frame_count);  
 
-   handler = setInterval(function(callback){
+   handler = setInterval(function(callback, finalFn){
         if(callback_count === (frame_count - 1)){
+           finalFn();
            clearInterval(handler);
         }
         callback( sfs_points[ callback_count]);
         callback_count++;
-   },interval,step);
+   },interval,step,done);
 }
 
-function filter_deg_clockwise( deg, add){
-   let eval = deg + add;
-   if(eval < 0){
-     return 360 - Math.abs(eval);
-   }
-   return eval;
+function multiCaller(){
+
 }
 
-
-/*
-function rotate_menu_to(that){
-   let btn_deg = parseFloat($(that).attr('deg'));
-   let diff_deg;
-   if(
-     (btn_deg < 270  && btn_deg > 90)
-   ){
-     diff_deg = '-=' + (btn_deg - 90);
-   }
-//    $('.btn-circle').each(function( index ){
-//     let deg = filter_deg_clockwise(parseFloat($(this).attr('deg')), diff_deg);
-//     console.log(deg)
-//     // $(this).css('bottom',get_y(deg, '50%'));
-//     // $(this).css('left',get_x(deg,'50%'));
-//     // $(this).attr('deg',deg)
-//    })
-   var stored_degs = [];
-   var test_arr = new Array(5);
-   var test_arr_1 = new Array(5);
-
-   $('.btn-circle').each(function( index ){
-       let deg = parseFloat($(this).attr('deg'));
-       stored_degs.push(deg);
-   });
-
-   $(that).animate({
-      pass_diff_deg: diff_deg
-   },{
-      step: function( now ){
-         $('.btn-circle').each(function( index ){
-            if(now >= diff_deg){
-                let rot_deg  = filter_deg_clockwise(stored_degs[index], now);
-                $(this).css('bottom',get_y(rot_deg, '50%'));
-                $(this).css('left',get_x(rot_deg,'50%'));
-                $(this).attr('deg',rot_deg.toFixed(2));
-                test_arr[index] = rot_deg;
-                test_arr_1[index] = now
-            }
-         })
-      },
-      complete: function(){
-            // $('.btn-circle').each(function( index ){
-            //     let rot_deg  = filter_deg_clockwise(stored_degs[index], now);
-            //     $(this).css('bottom',get_y(rot_deg, '50%'));
-            //     $(this).css('left',get_x(rot_deg,'50%'));
-            //     $(this).attr('deg',rot_deg);
-            //     console.log(rot_deg);
-            // })
-            console.log(btn_deg,diff_deg, test_arr,test_arr_1)
-      }
-   })
-// console.log(diff_deg)
-}
-*/
 $(document).ready(function(){
 
-    // var i=0;
-    // $('.btn-circle').click(function(){
-    //     $(this).animate({
-    //         oldRadius:'-=50'
-    //     },{
-    //         duration: 1000,
-    //         step: function(now,fx){
-    //             // let currentRedius = 50 + now;
-    //             // console.log($(fx.elem).css('transform'));
-    //             // $(this).css('bottom','calc(sin(0deg)*' + currentRedius + '% + 50%)');
-    //             // $(this).css('left','calc(cos(0deg)*' + currentRedius + '% + 50%)');
-    //             window.getComputedStyle(fx.elem);
-    // const matrix = new DOMMatrix(style.transform);
-    // console.log(matrix)
-    //         }
-    //     });
-    // });
-    // var circleBtns = [];
+    var introCarouselElement = document.querySelector('#intro_carousel')
+    var introCarousel = new bootstrap.Carousel(introCarouselElement, {
+      wrap: false,
+      cycle:false
+    });
+    var introCarouselIndex = 0;
+
     $('.btn-circle').each(function(i,obj){
         $(this).css('bottom',get_y( i * deg_div, '50%'));
         $(this).css('left',get_x( i * deg_div, '50%'));
         $(this).attr('deg', i * deg_div);
     })
-
-   
-
-   
 
     $('.btn-circle').click(function(){
       
@@ -248,18 +148,9 @@ $(document).ready(function(){
          buttonAngles.push( parseFloat($(this).attr('deg')));
       })
 
-      // var movedButtonAndles = setAngleTo90(clk_btn_deg, buttonAngles);
-      var animateFns = [];
-      // movedButtonAndles.map((movedAngle,i)=>function(){
-      //      animate({
-      //        begin: buttonAngles[i],
-      //        end: movedAngle,
-      //        duration: 3600,
-      //        animate:
-      //      })
-      // })
-      // console.log(buttonAngles,movedButtonAndles)
-      let angleOffset = computeAnglesOffset(clk_btn_deg);
+      var animateFns   = [];
+      let angleOffset  = computeAnglesOffset(clk_btn_deg);
+      var clkBtnHandle = this;
 
       $('.btn-circle').each(function( index ){
             var that    = this;
@@ -281,76 +172,25 @@ $(document).ready(function(){
                            $(that).css('left',get_x(moveDeg,'50%'));
                            $(that).css('bottom',get_y(moveDeg,'50%'));
                         }
+                     },
+                     done: function(){
+                        let selfIndex = $(clkBtnHandle).index();
+                        if(index === selfIndex){
+                            $(that).addClass('btn-circle-active');
+                        }else{
+                            $(that).removeClass('btn-circle-active');
+                        }
                      }
                   });
             }
             animateFns.push(fn);
       })
-      //console.log(animateFns)
       animateFns.map((fn)=> fn());
-
-
-      //   animate({
-      //     begin: btn_deg,
-      //     end:   90,
-      //     duration: 3600,
-      //     animate: function(now){
-      //       $('.btn-circle').each(function(){
-      //           $(this).css('bottom','calc(sin(0deg)*' + currentRedius + '% + 50%)');
-      //           $(this).css('left','calc(cos(0deg)*' + currentRedius + '% + 50%)');
-      //       })
-      //     }
-      //   })
     })
 
-
-   //  let arr = new Array(50);
-   //  let div = 90/50;
-   //  arr.fill(1)
-   //  arr = arr.map(function(val, i){
-   //       return (div * i) * (Math.PI/180);
-   //  })
-   //  arr=arr.map(function(val, i){
-   //    return Math.sin(val) * 50;
-   //  })
-   //  console.log(arr)
-
-
-   
-
-
-   // animate({
-   //    begin:0,
-   //    end:50,
-   //    duration:6000,
-   //    animate:function(now){
-
-   //    }
-   // });
-
-
-   //50 0
-   
-
-
-
-   //  console.log(easeInRange(-50,10));
+    $('.btn-circle').click(function(){
+         let index = $(this).index();
+         introCarousel.to(index);
+    })
     
-
-    // $('.btn-circle').click(function(){
-    //     // var index = $(this).index();
-    //     // $(this).animate({
-    //     //     old_radius:'50',
-    //     // },{
-    //     //    step: function( now ){
-    //     //       let curr_redius = 50 - now;
-    //     //       if(curr_redius >= 0){
-    //     //           $(this).css('bottom',get_y(index * deg_div, '' + curr_redius + '%'));
-    //     //           $(this).css('left',get_x(index * deg_div, '' + curr_redius + '%'));
-    //     //       }
-    //     //    }
-    //     // });
-    //     // let btn_deg = index * deg_div;
-    //     rotate_menu_to(this)
-    // })
 })
