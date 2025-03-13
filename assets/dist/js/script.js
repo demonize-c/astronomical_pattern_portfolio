@@ -134,10 +134,15 @@ $(document).ready(function(){
     });
     var introCarouselIndex = 0;
 
+
     $('.btn-circle').each(function(i,obj){
-        $(this).css('bottom',get_y( i * deg_div, '50%'));
-        $(this).css('left',get_x( i * deg_div, '50%'));
-        $(this).attr('deg', i * deg_div);
+        let btnAngle = i*deg_div + 90;
+        if(btnAngle > 360){
+          btnAngle = btnAngle % 360;
+        }
+        $(this).css('bottom',get_y( btnAngle, '50%'));
+        $(this).css('left',get_x( btnAngle, '50%'));
+        $(this).attr('deg', btnAngle);
     })
 
     $('.btn-circle').click(function(){
@@ -158,7 +163,7 @@ $(document).ready(function(){
             let fn = function() {
                   animate({
                      offset: angleOffset,
-                     duration: 1000,
+                     duration: 800,
                      step: function(addedDeg){
                         if(Math.sign(addedDeg) == -1){
                             let moveDeg = baseDeg + addedDeg < 0? 360 +baseDeg + addedDeg: baseDeg + addedDeg;
