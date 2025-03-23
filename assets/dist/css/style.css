@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 html, body{
   margin:0;
   padding:0;
@@ -238,16 +238,22 @@ body {
 .main-intro-slide button{
     border:0px solid #A6AEBF;
     color: #A6AEBF;
-    border-radius:.2em;
-    font-size:.6em;
-    padding:.6em 1.4em;
+    /* border-radius:.2em; */
+    font-size:16px;
+    padding:.6em 1.2em;
     background-color:#1A1A2E;
-    font-style:"Poppins", sans-serif;
-    font-weight:300;
+    /* font-style:"Poppins", sans-serif;
+    font-weight:600; */
     margin-top:1em;
     letter-spacing:.1em;
     margin-bottom:1.4em;
-
+    cursor: pointer;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight:400;
+    font-style: normal;
+    font-variation-settings:
+      "wdth" 100;
 }
 
 .main-intro-slide .status-text{
@@ -272,7 +278,65 @@ body {
   line-height:2em;
   letter-spacing:.5em;
 }
+.skill-slide h1{
+   font-family: "Poppins", sans-serif;
+   font-weight:500;
+   font-size:.8em;
+   color: #FFD700;
+   word-spacing:.15em;
+   letter-spacing:.05em;
+   /* text-transform:uppercase; */
+}
+.skill-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+  padding-left:65px;
+  padding-top:.6em;
+}
+.skill-list li{
+   color: #A6AEBF;
+   font-family: "Poppins", sans-serif;
+   font-weight:400;
+   font-size:18px;
+   padding:8px 0px;
+   margin-bottom:25px;
+   position: relative;
+   display:none;
+}
 
+/* .hexagon {
+  aspect-ratio: cos(30deg);
+  clip-path: polygon(-50% 50%,50% 100%,150% 50%,50% 0);
+  background: #3B8686;
+} */
+
+.skill-list li::before{
+  content:" ";
+  background-color:transparent;
+  display:block;
+  width:40px;
+  aspect-ratio:1/1;
+  position: absolute;
+  left:-65px;
+  top:0;
+  background-position:center;
+  background-size:90%;
+  background-repeat:no-repeat;
+}
+.skill-list li:nth-child(1)::before{
+  background-image:url('/assets/dist/pictures/icons/laravel.svg');
+}
+
+.skill-list li:nth-child(2)::before{
+  background-image:url('/assets/dist/pictures/icons/nodejs.svg');
+}
+.skill-list li:nth-child(3)::before{
+  background-image:url('/assets/dist/pictures/icons/spring-boot.svg');
+}
+.skill-list li:nth-child(4)::before{
+  background-image:url('/assets/dist/pictures/icons/nestjs.svg'); 
+}
 /* @media (max-width: 992px) { 
 
   .circle-1{
