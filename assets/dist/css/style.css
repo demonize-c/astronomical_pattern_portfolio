@@ -331,23 +331,23 @@ body {
   background-repeat:no-repeat;
 }
 .skill-list li:nth-child(1)::before{
-  background-image:url('/assets/dist/pictures/icons/laravel.svg');
+  background-image:url('assets/dist/pictures/icons/laravel.svg');
 }
 
 .skill-list li:nth-child(2)::before{
-  background-image:url('/assets/dist/pictures/icons/nodejs.svg');
+  background-image:url('assets/dist/pictures/icons/nodejs.svg');
 }
 .skill-list li:nth-child(3)::before{
-  background-image:url('/assets/dist/pictures/icons/spring-boot.svg');
+  background-image:url('assets/dist/pictures/icons/spring-boot.svg');
 }
 .skill-list li:nth-child(4)::before{
-  background-image:url('/assets/dist/pictures/icons/nestjs.svg'); 
+  background-image:url('assets/dist/pictures/icons/nestjs.svg'); 
 }
 .skill-list li:nth-child(5)::before{
-  background-image:url('/assets/dist/pictures/icons/docker.svg'); 
+  background-image:url('assets/dist/pictures/icons/docker.svg'); 
 }
 .skill-list li:nth-child(6)::before{
-  background-image:url('/assets/dist/pictures/icons/aws.svg'); 
+  background-image:url('assets/dist/pictures/icons/aws.svg'); 
 }
 /* @media (max-width: 992px) { 
 
