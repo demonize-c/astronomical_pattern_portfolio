@@ -285,26 +285,32 @@ body {
    color: #FFD700;
    word-spacing:.15em;
    letter-spacing:.05em;
+   margin-bottom:.8em;
    /* text-transform:uppercase; */
 }
 .skill-list{
   list-style:none;
+  width:100%;
   padding:0;
   margin:0;
-  padding-left:65px;
-  padding-top:.6em;
+  padding-left:50px;
+  margin-top:.5em;
 }
 .skill-list li{
    color: #A6AEBF;
    font-family: "Poppins", sans-serif;
    font-weight:400;
    font-size:18px;
-   padding:8px 0px;
+   padding:.8em 0em;
    margin-bottom:25px;
    position: relative;
-   display:none;
+   display:inline;
+   float:left;
+   width:40%;
 }
-
+.skill-list li:nth-child( even ){
+  float:right;
+}
 /* .hexagon {
   aspect-ratio: cos(30deg);
   clip-path: polygon(-50% 50%,50% 100%,150% 50%,50% 0);
@@ -318,8 +324,8 @@ body {
   width:40px;
   aspect-ratio:1/1;
   position: absolute;
-  left:-65px;
-  top:0;
+  left:-50px;
+  top:.3em;
   background-position:center;
   background-size:90%;
   background-repeat:no-repeat;
@@ -336,6 +342,12 @@ body {
 }
 .skill-list li:nth-child(4)::before{
   background-image:url('/assets/dist/pictures/icons/nestjs.svg'); 
+}
+.skill-list li:nth-child(5)::before{
+  background-image:url('/assets/dist/pictures/icons/docker.svg'); 
+}
+.skill-list li:nth-child(6)::before{
+  background-image:url('/assets/dist/pictures/icons/aws.svg'); 
 }
 /* @media (max-width: 992px) { 
 
@@ -533,9 +545,30 @@ body {
   .main-intro-slide .status-text{
     font-size:3.7vw;
   }
+  .skill-slide h1{
+    font-size:6vw;
+    font-weight:700;
+  }
+  .skill-list{
+    padding-left:40px;
+  }
+  .skill-list li{
+    font-size:12px;
+    padding:5px;
+  }
+  .skill-list li:nth-child(even){
+    width:30%;
+  }
+  .skill-list li:nth-child(odd){
+    width:70%;
+  }
+  .skill-list li::before{
+    width:30px;
+    left:-40px;
+  }
 }
 
-@media screen and (max-width: 330px) and (max-height: 543px) {
+@media screen and (max-width: 330px) and (max-height: 575px) {
 
   .circle-container{
     width:100%;
@@ -551,6 +584,30 @@ body {
   }
   .main-intro-slide h3{
     letter-spacing:.2px;
+  }
+  .skill-slide h1{
+    font-size:4.8vw;
+    font-weight:700;
+    word-spacing:0px;
+    margin-top:20px;
+  }
+  .skill-list{
+    padding-left:30px;
+  }
+  .skill-list li{
+    font-size:12px;
+    padding:5px;
+    font-weight:500;
+  }
+  .skill-list li:nth-child(even){
+    width:30%;
+  }
+  .skill-list li:nth-child(odd){
+    width:70%;
+  }
+  .skill-list li::before{
+    width:25px;
+    left:-30px;
   }
 }
 /* .btn-circle:nth-of-type(2){

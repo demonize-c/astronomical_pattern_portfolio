@@ -197,9 +197,4 @@ $(document).ready(function(){
          let index = $(this).index();
          introCarousel.to(index);
     })
-
-    $('.skill-list').click(function(){
-       $(this).find('li').fadeToggle();
-    })
-    
 })
