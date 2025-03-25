@@ -99,15 +99,52 @@ body {
 .circle-4{
   width:100%;
   height:100%;
-  border:3px #A6AEBF solid;
-  padding:10%;
+  border:1px #A6AEBF solid;
+  /* padding:10%; */
 }
 .circle-5{
   width:100%;
   height:100%;
-  border:2px #A6AEBF solid;
+  border:1px #A6AEBF solid;
   padding:20%;
 }
+.circle-mid-2{
+   width:100%;
+   height:100%;
+   padding: 15px;
+   /* border:20px dashed #A6AEBF;
+   border-radius:50%;
+   stroke-dasharray: '3%2c1'; */
+
+   /* border-radius:50%;
+   border-image-width: 35px;
+   border-image-source:linear-gradient(#A6AEBF,transparent,#A6AEBF);
+   border-image-slice: 30%; 
+   border-image-repeat:space; */
+   /* background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none'  rx='100' ry='100' stroke='%23A6AEBF' stroke-width='4' stroke-dasharray='15%2c 15' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+   border-radius:100px; */
+   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23A6AEBF' stroke-width='30' stroke-dasharray='10%2c 10' stroke-dashoffset='86' stroke-linecap='butt'/%3e%3c/svg%3e");
+   border-radius: 50%;
+   opacity:.5;
+   /* animation-name: example;
+   animation-duration: 4s;
+   animation-iteration-count: infinite;
+   animation-delay:0ms;
+   transition:4ms linear all; */
+}
+/* @keyframes example {
+  0%   {transform: rotate(0deg);}
+  50%  {transform:rotate(180deg);}
+  100%  {transform: rotate(360deg);}
+} */
+/* .circle-mid-1{
+  width:100%;
+  height:100%;
+  border-top:5px solid #A6AEBF;
+  border-bottom:5px solid #A6AEBF;
+  border-radius:50%;
+  padding:5%;
+} */
 
 .circle-6{
   width:100%;

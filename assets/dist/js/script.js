@@ -197,4 +197,18 @@ $(document).ready(function(){
          let index = $(this).index();
          introCarousel.to(index);
     })
+    function animateCore(){
+       
+      $({}).animate({ang:360},{
+         duration:16000,
+         easing:'linear',
+         step: function(now){
+            $('.circle-mid-2').css({transform:'rotate('+now+'deg)'})
+         },
+         complete: function(){
+            animateCore();
+         }
+      })
+    }
+    animateCore();
 })
