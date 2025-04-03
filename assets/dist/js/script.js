@@ -1,5 +1,5 @@
 
-var deg_div = 360 / 6;
+var deg_div = 360 / 3;
 
 function get_x(deg, rad){
     return "calc(cos("+ deg.toFixed(2) + "deg)*" + rad + " + 50%)";
